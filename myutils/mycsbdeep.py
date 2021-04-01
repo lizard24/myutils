@@ -6,12 +6,11 @@ from csbdeep.utils.tf import limit_gpu_memory
 from csbdeep.models   import Config, CARE
 
 import os
-import sys
 
 from general        import generate_folder, copy_file
 from myimageprocess import im
 
-    
+
 def training(  X, Y, X_val, Y_val, axes,
                basedir               = None,
                unet_n_depth          = 3,

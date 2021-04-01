@@ -1,7 +1,6 @@
 import numpy as np
 import gc
 import random
-import sys
 
 from csbdeep.utils import plot_some
 from csbdeep.data  import RawData, create_patches, norm_percentiles

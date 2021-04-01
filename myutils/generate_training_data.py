@@ -1,7 +1,5 @@
 import numpy as np
 import os
-import shutil
-import sys
 
 import matplotlib.pyplot as plt
 
@@ -9,7 +7,7 @@ from csbdeep.data  import RawData, norm_percentiles, no_background_patches, crea
 from csbdeep.io    import load_training_data, save_training_data
 from csbdeep.utils import plot_some
 
-from general       import generate_folder
+from general         import generate_folder
 from myimageprocess  import im
 
 
