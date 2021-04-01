@@ -9,7 +9,7 @@ setup(name='myutils',
           "pytest-shutil",
           "scikit-image",
           "scipy",
-          "open-cv",
+          "opencv-python",
           "opencv-rolling-ball",
 	  "csbdeep @ git+https://{lizard24}@github.com/lizard24/mycsbdeep.git"
       ],
