@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
 setup(name='myutils',
-      version='0.0.1',
+      package_dir = myutils,
       packages = find_packages(),
       )
