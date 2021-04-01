@@ -6,7 +6,7 @@ setup(name='myutils',
       install_requires=[
           "numpy",
           "matplotlib",
-          "shutil",
+          "pytest-shutil",
           "random",
           "scikit-image",
           "scipy",
