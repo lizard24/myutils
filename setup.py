@@ -5,7 +5,6 @@ setup(name='myutils',
       packages = find_packages(),
       install_requires=[
           "numpy",
-          "os",
           "matplotlib",
           "shutil",
           "random",
