@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 from matplotlib import rc
 rc('axes',edgecolor='#AEB6BF')
 from myutils.myimageprocess import im
+from twilio.rest import Client
 
 def myfigure( img,
               header_left = None,
@@ -179,8 +180,6 @@ def copy_file( source_file      = None,
             os.rename  ( os.path.join( target_dir, placeholder_file ) , os.path.join( target_dir, source_file ) )
                 
 def whatsapp(body="Done!"):
-    
-    from twilio.rest import Client
     
     account_sid = 'ACa0b548abba61c5189a49f6dc1ec3deb5'   ### os.environ['TWILIO_ACCOUNT_SID']
     auth_token  = '395fd1e030b2fb6a200e96cae1f385f1'     ### os.environ['TWILIO_AUTH_TOKEN']
