@@ -7,8 +7,8 @@ from csbdeep.data  import RawData, norm_percentiles, no_background_patches, crea
 from csbdeep.io    import load_training_data, save_training_data
 from csbdeep.utils import plot_some
 
-from general         import generate_folder
-from myimageprocess  import im
+from myutils.general         import generate_folder
+from myutils.myimageprocess  import im
 
 
 def create_npz( basepath     = '',                  ### strings

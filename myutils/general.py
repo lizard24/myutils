@@ -4,7 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import rc
 rc('axes',edgecolor='#AEB6BF')
-from myimageprocess import im
+from myutils.myimageprocess import im
 
 def myfigure( img,
               header_left = None,

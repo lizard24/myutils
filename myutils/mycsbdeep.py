@@ -7,8 +7,8 @@ from csbdeep.models   import Config, CARE
 
 import os
 
-from general        import generate_folder, copy_file
-from myimageprocess import im
+from myutils.general        import generate_folder, copy_file
+from myutils.myimageprocess import im
 
 
 def training(  X, Y, X_val, Y_val, axes,
