@@ -13,7 +13,7 @@ from skimage.metrics import structural_similarity as ssim
 
 import matplotlib.pyplot as plt
 
-from myutils.myimageprocess import imadjust, norm_minmse
+from myutils.myimageprocess import im, norm_minmse
 
 
 ##################### Metrics #####################
@@ -110,8 +110,8 @@ def realign(benchmark, img, shuffle, N, patch_size, metric='mse', display=True, 
     def no_norm(patches_x, patches_y, x, y, mask, channel):
         return patches_x, patches_y
     
-    raw_data = RawData.from_arrays( [imadjust(gaussian(benchmark, 2), lower=2, upper=99.8) if norm else benchmark],
-                                    [imadjust(gaussian(img, 2)      , lower=2, upper=99.8) if norm else img] )
+    raw_data = RawData.from_arrays( [im(gaussian(benchmark, 2)).adjust(lower=2, upper=99.8) if norm else benchmark],
+                                    [im(gaussian(img, 2)).adjust(lower=2, upper=99.8) if norm else img] )
     
     patch_size=patch_size+2*shuffle
     
