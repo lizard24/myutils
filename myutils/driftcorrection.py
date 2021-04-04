@@ -13,7 +13,7 @@ from skimage.metrics import structural_similarity as ssim
 
 import matplotlib.pyplot as plt
 
-from myutils.imageprocess import imadjust, norm_minmse
+from myutils.myimageprocess import imadjust, norm_minmse
 
 
 ##################### Metrics #####################
