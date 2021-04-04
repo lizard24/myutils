@@ -249,7 +249,7 @@ def correctdrift(data,
 
         for c in range(cc):
             for t in range(tt):
-                print((offset_dx[c][t], offset_dy[c][t]))
+                if display: print((offset_dx[c][t], offset_dy[c][t]))
                 new_data[c,t] = data[c,t,crop+offset_dx[c][t]:xx-crop+offset_dx[c][t],crop+offset_dy[c][t]:yy-crop+offset_dy[c][t]]
         
         
