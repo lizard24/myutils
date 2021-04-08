@@ -14,6 +14,6 @@ setup(name='myutils',
 	  "csbdeep @ git+https://{lizard24}@github.com/lizard24/mycsbdeep.git",
 	  "twilio",
 	  "readlif"
-      ],
-      dependency_links=['http://github.com/user/repo/tarball/master#egg=package-1.0']
+      ]
+      # dependency_links=['http://github.com/user/repo/tarball/master#egg=package-1.0']
       )
