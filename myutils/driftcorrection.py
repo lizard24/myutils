@@ -105,13 +105,13 @@ def get_correlation_map(benchmark, img, metric, shuffle):
     return np.rot90(np.mean(map_, axis=2, keepdims=True)[:,:,0], k=2) ### no idea why rotation is necessary, prob artefact from reshaping
 
 
-def realign(benchmark, img, shuffle, N, patch_size, metric='mse', display=True, norm=True):
+def realign(benchmark, img, shuffle, N, patch_size, metric='mse', display=True, norm=True, sigma=2):
      
     def no_norm(patches_x, patches_y, x, y, mask, channel):
         return patches_x, patches_y
     
-    raw_data = RawData.from_arrays( [im(gaussian(benchmark, 2)).adjust(lower=2, upper=99.8) if norm else benchmark],
-                                    [im(gaussian(img, 2)).adjust(lower=2, upper=99.8) if norm else img] )
+    raw_data = RawData.from_arrays( [im(gaussian(benchmark, sigma)).adjust(lower=2, upper=99.8) if norm else benchmark],
+                                    [im(gaussian(img, sigma)).adjust(lower=2, upper=99.8) if norm else img] )
     
     patch_size=patch_size+2*shuffle
     
@@ -161,7 +161,8 @@ def correctdrift(data,
                  display      = False,
                  execute      = True,
                  norm         = True,
-                 axes         = 'TYX'):
+                 axes         = 'TYX',
+		 sigma        = 2 ):
     
     """lateral drift correction of a numpy array
 
@@ -178,6 +179,7 @@ def correctdrift(data,
     execute       : boolean; returns corrected array if True, returns offset vector if False
     norm          : boolean; contrast adjusts the benchmark to (2, 99.8) before calculating offsets
     axes          : supports 'TYX', 'CTYX' and 'TCYX'
+    sigma         : sigma of the Gaussian filter that is applied as preprocessing step to the images
     
     Return
     ------
@@ -202,7 +204,7 @@ def correctdrift(data,
             
             img = data3d[t, shuffle+dx_ini:xx-shuffle+dx_ini, shuffle+dy_ini:yy-shuffle+dy_ini]
             
-            dd = realign(benchmark_, img, shuffle, patch_number, patch_size, metric=metric, display=display, norm=norm)
+            dd = realign(benchmark_, img, shuffle, patch_number, patch_size, metric=metric, display=display, norm=norm, sigma=sigma)
             
             dx[t], dy[t] = dd[0]+dx_ini, dd[1]+dy_ini
             
@@ -235,7 +237,7 @@ def correctdrift(data,
     if cc>1:
         for c in range(1, cc):
             dd = realign( np.mean(benchmark[c-1], axis=0), np.mean(benchmark[c], axis=0),
-                          shuffle, patch_number, patch_size, metric=metric, display=display, norm=norm )
+                          shuffle, patch_number, patch_size, metric=metric, display=display, norm=norm, sigma=sigma )
             offset_dx[c] += dd[0]
             offset_dy[c] += dd[1]
 
