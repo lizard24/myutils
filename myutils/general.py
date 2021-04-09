@@ -6,6 +6,27 @@ from matplotlib import rc
 rc('axes',edgecolor='#AEB6BF')
 from myutils.myimageprocess import im
 from twilio.rest import Client
+from read_roi import read_roi_file as read_roi
+
+
+def _roi(img, file, interpol=None, **kwargs):
+    ### img is numpy array with last two dimensions being image width and height
+    ### interpolates cropped image to original img size if interpol='width' or 'height'
+    ### TO DO: interpolation only works for mxn numpy array atm
+   
+    roi = read_roi(file+'.roi')[file.split('/')[-1]]
+   
+    l, t, w, h = roi['left'], roi['top'], roi['width'], roi['height']
+   
+    crop = img[...,t:t+h+1, l:l+w+1]
+   
+    if interpol=='width':
+        crop = interpolation( crop, -1, img.shape[1])
+    elif interpol=='height':
+        crop = interpolation( crop, img.shape[0], -1)
+   
+    return crop
+
 
 def myfigure( img,
               header_left = None,

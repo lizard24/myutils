@@ -13,7 +13,8 @@ setup(name='myutils',
           "opencv-rolling-ball",
 	  "csbdeep @ git+https://{lizard24}@github.com/lizard24/mycsbdeep.git",
 	  "twilio",
-	  "readlif"
+	  "readlif",
+	  "read-roi"
       ]
       # dependency_links=['http://github.com/user/repo/tarball/master#egg=package-1.0']
       )
