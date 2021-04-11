@@ -36,6 +36,7 @@ def _roi(img, file=None, interpol=None, **kwargs):
 def myfigure( img,
               header_left = None,
               header_top  = None,
+	      title       = None,
               xlim    = None,
               ylim    = None,
               pmin    = None,
@@ -68,7 +69,10 @@ def myfigure( img,
     
     interval = 18/fig_cols
     fig, ax = plt.subplots(fig_rows, fig_cols, figsize = (interval*fig_cols, interval*fig_rows))
-    ax = np.reshape(ax, (fig_rows, fig_cols))    
+    ax = np.reshape(ax, (fig_rows, fig_cols))
+
+    if not title is None:
+        fig.suptitle(title, fontsize=int(240/fig_cols))
                            
     for row in range(fig_rows):
         for col in range(fig_cols):
