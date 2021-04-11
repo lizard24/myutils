@@ -72,7 +72,7 @@ def myfigure( img,
     ax = np.reshape(ax, (fig_rows, fig_cols))
 
     if not title is None:
-        fig.suptitle(title, fontsize=int(240/fig_cols))
+        fig.suptitle(title, fontsize=int(200/fig_cols))
                            
     for row in range(fig_rows):
         for col in range(fig_cols):
