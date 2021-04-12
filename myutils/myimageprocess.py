@@ -11,18 +11,10 @@ from scipy            import interpolate
 
 from csbdeep.utils import plot_some
 
-
-def rgb2gray(rgb):
-    ### rgb comes with axes 'YXZ'
-
-    r, g, b = rgb[...,0], rgb[...,1], rgb[...,2]
-    
-    return 0.2989 * r + 0.5870 * g + 0.1140 * b
-
-
 def imshape2d(file):
     from PIL import Image
     return Image.open(file).size
+
 
 class im:
     
@@ -45,6 +37,11 @@ class im:
         
      
     ################## FUNCTIONS OUTSIDE OF INIT AND EXIT ##################
+
+
+    def rgb2gray(rgb):
+        return np.dot(rgb[...,:3], [0.2989, 0.5870, 0.1140])
+        
     
     def im2rgb(blue    = None,
                red     = None,
@@ -140,11 +137,6 @@ class im:
             
         return im.exit(self)
     
-    def rgb2gray(self):
-        for n in range(self.N):
-             self.data[n] = np.dot(self.data[n,...,:3], [0.2989, 0.5870, 0.1140])
-        return im.exit(self)
-        
     def norm(self, minVal=0, maxVal=1, glob=False):
         self.data = np.float64( (self.data - np.min(self.data)) / (np.max(self.data) - np.min(self.data) ) )
         if (glob==False) and (self.N>1):
