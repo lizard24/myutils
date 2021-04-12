@@ -12,6 +12,14 @@ from scipy            import interpolate
 from csbdeep.utils import plot_some
 
 
+def rgb2gray(rgb):
+    ### rgb comes with axes 'YXZ'
+
+    r, g, b = rgb[...,0], rgb[...,1], rgb[...,2]
+    
+    return 0.2989 * r + 0.5870 * g + 0.1140 * b
+
+
 def imshape2d(file):
     from PIL import Image
     return Image.open(file).size
