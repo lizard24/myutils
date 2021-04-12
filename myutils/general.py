@@ -14,8 +14,7 @@ def _roi(img, file=None):
 
     if not file is None:
    
-        roi = read_roi(file)[file.split('/')[-1]]
-   
+        roi = read_roi(file)[file.split('/')[-1].split('.roi')[0]]
         l, t, w, h = roi['left'], roi['top'], roi['width'], roi['height']
 
         dims_first, dims_last = img.shape[:-2], img.shape[-2:]
