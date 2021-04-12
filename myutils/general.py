@@ -44,7 +44,7 @@ def myfigure( img,
 	      roi     = None ):
 
     if save:
-        generate_folder(save, level=-1):
+        generate_folder(save, level=-1)
     
     ### img is list of numpy arrays
     img = np.asarray(img)
