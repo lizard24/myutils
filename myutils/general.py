@@ -8,29 +8,26 @@ from myutils.myimageprocess import im
 from twilio.rest import Client
 from read_roi import read_roi_file as read_roi
 
+def _roi(img, file=None):
 
-def _roi(img, file=None, interpol=None, **kwargs):
-    ### img is numpy array with last two dimensions being image width and height
-    ### interpolates cropped image to original img size if interpol='width' or 'height'
-    ### TO DO: interpolation only works for mxn numpy array atm
+    ### file is .roi file
 
     if not file is None:
    
-        roi = read_roi(file+'.roi')[file.split('/')[-1]]
+        roi = read_roi(file)[file.split('/')[-1]]
    
         l, t, w, h = roi['left'], roi['top'], roi['width'], roi['height']
-   
-        crop = img[...,t:t+h+1, l:l+w+1]
-   
-        if interpol=='width':
-            crop = interpolation( crop, -1, img.shape[1])
-        elif interpol=='height':
-            crop = interpolation( crop, img.shape[0], -1)
-   
-        return crop
 
-    else:
-        return img
+        dims_first, dims_last = img.shape[:-2], img.shape[-2:]
+	N = np.prod(dims_first) if not dims_first == () else 1
+	img = np.reshape(img, (N,)+dims_last)
+
+	img = img[:,t:t+h+1, l:l+w+1]
+
+	dims_last = img.shape[-2:]
+	img = np.reshape(img, dims_first+dims_last)
+   
+    return img
 
 
 def myfigure( img,
@@ -43,7 +40,8 @@ def myfigure( img,
               pmax    = None,
               rot     = False,
               save    = False,
-              display = True ):
+              display = True,
+	      roi     = None ):
     
     ### img is list of numpy arrays
     img = np.asarray(img)
@@ -52,6 +50,8 @@ def myfigure( img,
         img = np.reshape(img, (img.shape[0],1,)+img.shape[1:])        
     if rot:
         img = np.swapaxes(img, 0, 1)
+
+    img = _roi(img, file=roi)
     
     if not (pmin, pmax) == (None, None):
         if (pmin!=None) and (pmax==None):
