@@ -78,7 +78,7 @@ def merge_npz( folder_npz = None,     ### string
               
     save_file = save_file+'.npz' if not '.npz' in save_file else save_file
 
-    save_training_data(save_file, X, Y, 'SCYX')
+    save_training_data(save_file, X, Y, axes)
     
     for i in range(2):
         plt.figure(figsize=(16,4))
