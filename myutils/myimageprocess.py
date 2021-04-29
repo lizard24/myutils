@@ -195,15 +195,18 @@ class im:
         self.data = np.float64(self.data/np.max(self.data))
         
         if glob:
+	    sigma = sigma if not sigma is None else np.std(self.data)
+            mean  = mean  if not sigma is None else np.mean(self.data)
             self.data = (self.data - np.mean(self.data)) / np.std(self.data)
+	    self.data = self.data * sigma + mean
         else:
             for n in range(self.N):
+	        sigma_n = sigma if not sigma is None else np.std(self.data[n])
+                mean_n  = mean  if not sigma is None else np.mean(self.data[n])
                 self.data[n] = (self.data[n] - np.mean(self.data[n])) / np.std(self.data[n])
+		self.data = self.data * sigma_n + mean_n
 
-        if not sigma is None:
-            self.data = self.data * sigma
-        if not mean is None:
-            self.data = self.data + mean
+
         if clip: self.data = np.clip(self.data, 0, 1)
 
         return im.exit(self)
