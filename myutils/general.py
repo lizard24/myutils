@@ -7,26 +7,121 @@ rc('axes',edgecolor='#AEB6BF')
 from myutils.myimageprocess import im
 from twilio.rest import Client
 from read_roi import read_roi_file as read_roi
+from scipy import ndimage
 
-def _roi(img, file=None):
 
-    ### file is .roi file
+def extract_profile(image, x0, y0, x1, y1, width=1, num=None):
+    """
+    Extract a line profile from (x0, y0) to (x1, y1).
+    
+    Parameters
+    ----------
+    image :  2D ndarray
+        the image to extract from
+    x0, y0 : int
+        coordinates of start of profile
+    x1, y1 : int
+        coordinates of profile end
+    width : int
+        profile width in pixels (number of parallel profiles to average over)
+    Returns
+    -------
+    
+    a line profile of the image, interpolated to match the pixel spacing
+    """
+    w = int(np.floor(0.5 * width))
+    
+    Dx = x1 - x0
+    Dy = y1 - y0
+    
+    l = np.sqrt((Dx ** 2 + Dy ** 2)) if num is None else num
+    
+    dx = Dx / l
+    dy = Dy / l
+    
+    if Dx == 0 and Dy == 0: #special case - profile is orthogonal to current plane
+        d_x = w
+        d_y = w
+    else:
+        d_x = w * abs(dy)
+        d_y = w * abs(dx)
+    
+    #pixel indices at 1-pixel spacing
+    t = np.arange(np.ceil(l))
+    
+    x_0 = min(x0, x1)
+    y_0 = min(y0, y1)
+    
+    d__x = abs(d_x) + 1
+    d__y = abs(d_y) + 1
+    
+    ims = image[int(min(x0, x1) - d__x):int(max(x0, x1) + d__x + 1),
+                int(min(y0, y1) - d__y):int(max(y0, y1) + d__y + 1)].squeeze()
+    
+    splf = ndimage.spline_filter(ims)
+    
+    p = np.zeros(len(t))
+    
+    x_c = t * dx + x0 - x_0
+    y_c = t * dy + y0 - y_0
+    
+
+    for i in range(-w, w + 1):
+        p += ndimage.map_coordinates(splf, np.vstack([x_c + d__x + i * dy, y_c + d__y - i * dx]),
+                                     prefilter=False)
+        
+    p = p / (2 * w + 1)
+    
+    return p
+
+
+def _roi(img, file=None, num=None, width=1):
+
+    """
+    Extracts either cropped ROI or Lineprofile from image.
+    
+    Parameters
+    ----------
+    image :  2D ndarray
+        the image to extract from
+    file  :  str
+        '.roi' file of lineprofile or ROI
+    num  : int
+        optional: for line profile; length of line profile; default: no interpolation
+    width : int
+        optional: for line profile; profile width in pixels (number of parallel profiles to average over)
+    Returns
+    -------
+    
+    cropped out ROI (=image) or line profile (1d array)
+    """
 
     if not file is None:
    
         roi = read_roi(file)[file.split('/')[-1].split('.roi')[0]]
-        l, t, w, h = roi['left'], roi['top'], roi['width'], roi['height']
-        l, t, w, h = map(lambda x: int(x), (l, t, w, h))
+    
+        try:
+            l, t, w, h = roi['left'], roi['top'], roi['width'], roi['height']
+            l, t, w, h = map(lambda x: int(x), (l, t, w, h))
 
-        dims_first, dims_last = img.shape[:-2], img.shape[-2:]
-        N = np.prod(dims_first) if not dims_first == () else 1
-        img = np.reshape(img, (N,)+dims_last)
+            dims_first, dims_last = img.shape[:-2], img.shape[-2:]
+            N = np.prod(dims_first) if not dims_first == () else 1
+            img = np.reshape(img, (N,)+dims_last)
 
-        img = img[:,t:t+h+1, l:l+w+1]
+            img = img[:,t:t+h+1, l:l+w+1]
 
-        dims_last = img.shape[-2:]
-        img = np.reshape(img, dims_first+dims_last)
-   
+            dims_last = img.shape[-2:]
+            img = np.reshape(img, dims_first+dims_last)
+
+        except:
+            x1, x2, y1, y2 = roi['x1'], roi['x2'], roi['y1'], roi['y2']
+            x1, x2, y1, y2 = map(lambda x: int(x), (x1, x2, y1, y2))
+                        
+            img = extract_profile(img, y1, x1, y2, x2, width=width, num=num)
+            
+            #x, y = np.linspace(x1, x2, num), np.linspace(y1, y2, num)
+            #img = ndimage.map_coordinates(img, np.vstack((y, x)))
+            
     return img
 
 
