@@ -11,6 +11,20 @@ from myutils.general        import generate_folder, copy_file
 from myutils.myimageprocess import im
 
 
+
+def change_configfile(directory):
+
+    os.rename("%s/config.json" % directory, "%s/config_v0.json" % directory)
+
+    with open("%s/config_v0.json" % directory, "r") as fin:
+        for item in fin:
+            item = item.replace('ms_ssim_no_weights', 'no_weights').replace('no_weights', 'ms_ssim_no_weights')
+            item = item.replace('ms_ssim_filter_size', 'filter_size').replace('filter_size', 'ms_ssim_filter_size')
+            item = item.replace('mssim', 'ms_ssim') 
+            with open("%s/config.json" % directory, "wt") as fout:
+                fout.write(item)
+
+
 def training(  X, Y, X_val, Y_val, axes,
                basedir               = None,
                unet_n_depth          = 3,
