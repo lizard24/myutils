@@ -124,7 +124,8 @@ def training(  X, Y, X_val, Y_val, axes,
                         ms_ssim_no_weights    = ms_ssim_no_weights  if train_loss == 'ms_ssim' else None,
                         ms_ssim_filter_size   = ms_ssim_filter_size if train_loss == 'ms_ssim' else None,
                         train_learning_rate   = train_learning_rate,
-                        callback_period       = callback_period
+                        callback_period       = callback_period,
+                        train_tensorboard     = False
                        )
         print(config)
         vars(config)
