@@ -1,0 +1,28 @@
+
+NOTES:
+
+-  "--file_npz" has to be set
+-  training results are saved in a subfolder (=="--model_name") in "my_model"
+
+
+OPTIONS:
+
+"--file_npz"			default=None		type=str	help="Npz file with training data."
+
+"--model_name"			default='my_model'	type=str	help="Name of the folder the model is saved in."
+
+"--val_split"			default=0.05		type=float	help="Percentage of validation split."
+
+"--train_loss"			default="mae"		type=str	help="Loss function"
+
+"--ms_ssim_no_weights"		default=3		type=int	help="Number of weights if train_loss is ms_ssim."
+
+"--ms_ssim_filter_size"		default=11		type=int	help="Filter size of Gaussian window if train_loss is ms_ssim."
+
+"--train_learning_rate"		default=5e-3		type=float	help="Learning rate"
+
+"--train_batch_size"		default=4		type=int	help="Batch size"
+
+"--train_steps_per_epoch"	default=50		type=int	help="Steps per epoch"
+
+"--train_epochs"		default=50		type=int	help="Epoch number"
