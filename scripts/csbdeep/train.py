@@ -12,7 +12,9 @@ import numpy as np
 parser = argparse.ArgumentParser()
 
 parser.add_argument("--file_npz", default=None, type=str, help="Npz file with training data.")
+
 parser.add_argument("--model_name", default='my_model', type=str, help="Name of the folder the model is saved in.")
+parser.add_argument("--model_folder", default='models' type=str, help="Folder the model is saved in.")
 
 parser.add_argument("--val_split", default=0.05, type=float, help="Percentage of validation split.")
 
@@ -26,6 +28,8 @@ parser.add_argument("--train_batch_size", default=4, type=int, help="Batch size"
 parser.add_argument("--train_steps_per_epoch", default=50, type=int, help="Steps per epoch")
 parser.add_argument("--train_epochs", default=50, type=int, help="Epoch number")
 
+parser.add_argument("--display", default=False, action='store_true')
+
 args = parser.parse_args()
 
 
@@ -33,10 +37,12 @@ args = parser.parse_args()
                                                  validation_split = args.val_split,
                                                  verbose = False )
 
-plt.figure(figsize=(12,5))
-plot_some(X_val[:5],Y_val[:5])
-plt.suptitle('5 example validation patches (top row: source, bottom row: target)');
+if args.display:
+    plt.figure(figsize=(12,5))
+    plot_some(X_val[:5],Y_val[:5])
+    plt.suptitle('5 example validation patches (top row: source, bottom row: target)');
 
+    
 c = axes_dict(axes)['C']
 n_channel_in, n_channel_out = X.shape[c], Y.shape[c]
 
@@ -44,7 +50,7 @@ n_channel_in, n_channel_out = X.shape[c], Y.shape[c]
 config = Config( axes,
                  n_channel_in,
                  n_channel_out,
-                 unet_kern_size = 3,
+		 train_tensorboard     = False,
                  train_loss            = args.train_loss,
                  ms_ssim_no_weights    = args.ms_ssim_no_weights,
                  ms_ssim_filter_size   = args.ms_ssim_filter_size,
@@ -54,24 +60,27 @@ config = Config( axes,
                  train_epochs          = args.train_epochs )
 
 
-model = CARE(config, args.model_name, basedir='models')
+model = CARE(config, args.model_name, basedir=args.model_folder)
 
-#model.keras_model.summary()
+if args.display:
+    model.keras_model.summary()
 
 history = model.train(X,Y, validation_data=(X_val,Y_val))
 
-plt.figure(figsize=(16,5))
-plot_history(history,['loss','val_loss'],['mse','val_mse','mae','val_mae']);
-plt.savefig("models/%s/loss.png" % args.model_name)
-plt.close()
+fig, ax = plt.figure(figsize=(16,5))
+ax.plot_history(history,['loss','val_loss'],['mse','val_mse','mae','val_mae']);
+fig.savefig( "%s/%s/loss.png" % (args.model_folder, args.model_name) )
+if args.display is False:
+    plt.close(fig)
 
-plt.figure(figsize=(20,12))
-_P = model.keras_model.predict(X_val[:5])
-plot_some(X_val[:5],Y_val[:5],_P,pmax=99.5)
-plt.suptitle('5 example validation patches\n'      
+fig, ax = plt.figure(figsize=(20,12))
+restored = model.keras_model.predict(X_val[:5])
+ax.plot_some(X_val[:5],Y_val[:5],_P,pmax=99.5)
+fig.suptitle('5 example validation patches\n'      
              'top row: input (source),  '          
              'middle row: target (ground truth),  '
              'bottom row: predicted from source');
-plt.savefig("models/%s/evaluation.png" % args.model_name)
-plt.close()
+fig.savefig( "%s/%s/evaluation.png" % (args.model_folder, args.model_name) )
+if args.display is False:
+    plt.close(fig)
 

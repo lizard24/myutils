@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(name='myutils',
-      version='0.0.4',
+      version='0.0.5',
       # package_dir = {'': 'myutils'}, # if there was a folder "myutils" in the folder
       packages = find_packages(),
       install_requires=[

@@ -11,6 +11,8 @@ OPTIONS:
 
 "--model_name"			default='my_model'	type=str	help="Name of the folder the model is saved in."
 
+"--model_folder"		default='models'	type=str	help="Folder the model is saved in."
+
 "--val_split"			default=0.05		type=float	help="Percentage of validation split."
 
 "--train_loss"			default="mae"		type=str	help="Loss function"
@@ -26,3 +28,5 @@ OPTIONS:
 "--train_steps_per_epoch"	default=50		type=int	help="Steps per epoch"
 
 "--train_epochs"		default=50		type=int	help="Epoch number"
+
+"--display"			default=False		type=boolean	help="Display info yes/no"
