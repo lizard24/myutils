@@ -43,7 +43,7 @@ def get_history(file):
     
     history = {}
     for cc in range(ncols):
-        history[cols[cc]] = [lines[rr][cc] for rr in range(nrows)]
+        history[cols[cc]] = [float(lines[rr][cc]) for rr in range(nrows)]
             
     return history
 
