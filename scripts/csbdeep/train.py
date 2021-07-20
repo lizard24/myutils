@@ -77,7 +77,7 @@ if args.continue_training:
 
 if not (args.model_name_pretrained is None) or (args.continue_training is False):
     history_pre = get_history('%s/%s/history.txt' % (args.model_folder, args.model_name))
-    print("Learning rate is modified from %s > %s !' % (args.train_learning_rate, history_pre['lr'][-1])
+    print("Learning rate is modified from %s > %s !" % (args.train_learning_rate, history_pre['lr'][-1])
     args.train_learning_rate = history_pre['lr'][-1]
 else:
     history_pre = None
