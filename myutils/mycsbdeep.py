@@ -25,6 +25,30 @@ def change_configfile(directory):
                 fout.write(item)
 
 
+def get_history(file):
+    
+    with open(file) as f:
+        lines_raw = f.readlines()
+
+        lines = []
+        for item in lines_raw:
+            item = [item2.replace('\n','') for item2 in item.split('\t')]
+            lines.append(item)
+            
+        cols = lines[0]
+        lines.remove(lines[0])
+        
+    nrows = len(lines)
+    ncols = len(cols)
+    
+    history = {}
+    for cc in range(ncols):
+        history[cols[cc]] = [lines[rr][cc] for rr in range(nrows)]
+            
+    return history
+
+
+
 def training(  X, Y, X_val, Y_val, axes,
                basedir               = None,
                unet_n_depth          = 3,
