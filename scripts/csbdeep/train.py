@@ -4,7 +4,8 @@ from csbdeep.utils import axes_dict, plot_some, plot_history
 from csbdeep.io import load_training_data
 from csbdeep.models import Config, CARE
 
-from myutils.general import copy_file
+from myutils.general   import copy_file
+from myutils.mycsbdeep import get_history
 
 import matplotlib.pyplot as plt
 import argparse
@@ -71,6 +72,15 @@ if args.continue_training:
     else:
         args.continue_training = False
 
+        
+
+
+if not (args.model_name_pretrained is None) or (args.continue_training is False):
+    history_pre = get_history('%s/%s/history.txt' % (args.model_folder, args.model_name))
+    args.train_learning_rate = history_pre['lr'][-1]
+else:
+    history_pre = None
+
 
 if args.train_epochs<=0:
     print("'train_epochs<=0' - return without training.")
@@ -131,19 +141,21 @@ if args.display:
 plt.close()
 
 
+cols =  ['epoch_no', 'loss', 'val_loss', 'mae', 'val_mae', 'mse', 'val_mse', 'ssim', 'val_ssim', 'lr']
+
+if not history_pre is None:
+    for col in cols:
+        history.history[col] = history_pre[col] + history.history[col] 
+
+        
 plt.figure(figsize=(16,5))
 #cols = list(history.history.keys())
-#plot_history(history,[cols[4],cols[0]],[cols[5],cols[1],cols[6],cols[2], cols[7],cols[3]])
 plot_history(history,['loss', 'val_loss'],['mse', 'val_mse', 'mae', 'val_mae', 'ssim', 'val_ssim'])
-plt.savefig( "%s/%s/loss_%s-%s.png" % (args.model_folder,
-                                       args.model_name,
-                                       args.train_epochs_pretrained+1,
-                                       args.train_epochs_pretrained+args.train_epochs) )
+plt.savefig( "%s/%s/loss.png" % (args.model_folder,
+                                 args.model_name) )
 if args.display:
     plt.show()
 plt.close()
-
-cols =  ['epoch_no', 'loss', 'val_loss', 'mae', 'val_mae', 'mse', 'val_mse', 'ssim', 'val_ssim', 'lr']
 
 if not os.path.exists('%s/%s/history.txt' % (args.model_folder, args.model_name)):
     file = open("%s/%s/history.txt" % (args.model_folder, args.model_name),"a")
