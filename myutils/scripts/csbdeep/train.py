@@ -42,7 +42,7 @@ parser.add_argument("--callback_period", default=None, type=int, help='If/how of
 parser.add_argument("--model_name_pretrained", default=None, type=str, help="Folder to a pretrained model.")
 parser.add_argument("--train_epochs_pretrained", default=0, type=int, help='Last epoch of model_name_pretrained.')
 
-args = parser.parse_args()
+args, unknown = parser.parse_known_args()
 
 if os.path.exists('%s/%s/history.txt' % (args.model_folder, args.model_name) ):
     print("FYI: Folder already exists: '%s/%s'!" % (args.model_folder, args.model_name))
