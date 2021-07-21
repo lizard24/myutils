@@ -17,7 +17,7 @@ import os
 
 parser = argparse.ArgumentParser()
 
-parser.add_argument("--file_npz", default=None, type=str, help="Npz file with training data.")
+parser.add_argument("--file_npz", default='traig-data.npz', type=str, help="Npz file with training data.")
 
 parser.add_argument("--model_name", default='my_model', type=str, help="Name of the folder the model is saved in.")
 parser.add_argument("--model_folder", default='models', type=str, help="Folder the model is saved in.")
