@@ -11,7 +11,6 @@ import matplotlib.pyplot as plt
 import argparse
 import numpy as np
 
-import sys
 import os
 
 
@@ -76,12 +75,8 @@ if args.continue_training:
 print(args.continue_training)
 
 if not (args.model_name_pretrained is None) or (args.continue_training is True):
-    print("hello")
     history_pre = get_history('%s/%s/history.txt' % (args.model_folder, args.model_name))
-    print("Learning rate is modified from %s > %s !" % (args.train_learning_rate, history_pre['lr'][-1]) )
-    print(type(history_pre['lr'][-1]))
-    import sys
-    sys.exit()
+    print("Learning rate is modified: %s -> %s !" % (args.train_learning_rate, history_pre['lr'][-1]) )
     args.train_learning_rate = history_pre['lr'][-1]
 else:
     history_pre = None
@@ -128,7 +123,7 @@ elif args.continue_training:
     model.load_weights('callbacks/%s' % callback_file)
     print("Weights are loaded from earlier callback: %s" % callback_file)
 
-history = model.train(X,Y, validation_data=(X_val,Y_val))
+history = model.train(X, Y, validation_data = (X_val, Y_val))
 
 
 plt.figure(figsize=(20,12))
