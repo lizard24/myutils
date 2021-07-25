@@ -225,6 +225,7 @@ def copy_file( source_file      = None,
                source_dir       = None,
                target_dir       = None,
                overwrite_target = False,
+               delete_source    = False,
                verbose          = True ):
     
         """ Moves source_file from source_dir to target_dir and renames it to target_file if specified.
@@ -233,6 +234,7 @@ def copy_file( source_file      = None,
         ----------
         Does this function overwrite file with same name in 'target_dir'? Not in default (see 'overwrite_target').
         Does this function create 'target_dir' if it doesn't exist? Yes.
+        Does this function delete the source file? Only if 'delete_source' is set to 'True'.
         
         Parameters
         ----------
@@ -242,6 +244,7 @@ def copy_file( source_file      = None,
         source_dir       : str; for example: 'data/source' 
         target_dir       : str; for example: 'data/target'
         overwrite_target : boolean; if set to 'True': function overwrites file in 'target_dir' with same name as 'target_file'
+        delete_source    : boolean; if set to 'True': function deletes source file after copying.
         verbose          : boolean; if set to 'True': function informs user if file is overwritten in 'target_dir'
         
         to do
@@ -306,5 +309,8 @@ def copy_file( source_file      = None,
             
         if placeholder:
             os.rename  ( os.path.join( target_dir, placeholder_file ) , os.path.join( target_dir, source_file ) )
+            
+        if delete_source:
+            os.remove('%s/%s' % (source_dir, source_file))
                 
 
