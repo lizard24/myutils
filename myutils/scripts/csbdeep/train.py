@@ -39,8 +39,6 @@ def plot_history_v2(history,*keys,**kwargs):
         w, keys = 1, [keys]
     else:
         w = len(keys)
-
-    print(history.keys())
     
     plt.gcf()
     for i, group in enumerate(keys):
@@ -125,7 +123,7 @@ if os.path.exists('%s/%s/history.txt' % (args.model_folder, args.model_name)):
             print("Learning rate is modified: %s -> %s !" % (args.train_learning_rate, history_all['lr'][-1]) )
             args.train_learning_rate = history_all['lr'][-1]
 else:
-    history_all = {'epoch_no': [n+1 for n in range(args.train_epochs)]}
+    history_all = {}
 
 if args.train_epochs<=0:
     print("'train_epochs' <= 0 - return without training.")
@@ -219,6 +217,8 @@ plt.close()
 
 for col in history.history.keys():
     history_all[col] = history_all[col] + history.history[col] if col in history_all.keys() else history.history[col]
+    
+history_all['epoch_no'] = [int(item) for item in history_all['epoch_no']]
 
 plt.figure(figsize=(16,5))
 plot_history_v2(history_all,['loss', 'val_loss'],['mse', 'val_mse', 'mae', 'val_mae', 'ssim', 'val_ssim'])
