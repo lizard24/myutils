@@ -38,10 +38,6 @@ def create_npz( basepath     = '',                  ### strings
     
     generate_folder(save_file, level=-1)
     
-#     n, save_file_ = 0, ''
-#     while (os.path.exists(save_file_)) or (n<1):
-#         save_file_ = "%s_%04d.npz" % (save_file.split('.')[0], n)
-#         n+=1
     save_file_=save_file
     
     create_patches( raw_data            = raw_data,
@@ -54,35 +50,42 @@ def create_npz( basepath     = '',                  ### strings
     
 
 
-def merge_npz( folder_npz = None,     ### string
-               save_file  = None ):   ### string
-     
-    filenames = [item for item in os.listdir(folder_npz) if '.npz' in item]
+
+def merge_npz( files_npz  = None  ,     ### list of npz files
+               save_file  = None  ,
+               verbose    = False ,
+               delete     = False   ):   ### string
     
-    X, Y = [None]*len(filenames), [None]*len(filenames)
+    if type(files_npz) is str:
+        files_npz = [files_npz]
     
-    for n, file in enumerate(filenames):
-        (X[n], Y[n]), (X_val, Y_val), axes = load_training_data(folder_npz+'/'+file, validation_split=0, verbose=False)
+    for n, file in enumerate(files_npz):
+        (X_, Y_), (X_val, Y_val), axes = load_training_data( file, validation_split=0, verbose=False )
+        if n==0:
+            X, Y = X_, Y_
+        else:
+            X = np.concatenate((X, X_), axis=0)
+            Y = np.concatenate((Y, Y_), axis=0)
     
-    def list_to_array(liste):
-        data = liste[0]
-        for item in liste[1:]:
-             data = np.concatenate((data,item), axis=0)
-        return data
-        
-    X, Y = list_to_array(X), list_to_array(Y)
+    X, Y = list(X), list(Y)
+
     shuffle_inplace(X,Y)
-    X, Y = np.swapaxes(X, 1, 3), np.swapaxes(Y, 1, 3)
+    
+    X, Y = map(lambda x: np.asarray(x), (X, Y))
     
     generate_folder(save_file, level=-1)
-              
-    save_file = save_file+'.npz' if not '.npz' in save_file else save_file
-
-    save_training_data(save_file, X, Y, axes)
     
-    for i in range(2):
-        plt.figure(figsize=(16,4))
-        sl = slice(8*i, 8*(i+1)), 0
-        plot_some(X[sl],Y[sl],title_list=[np.arange(sl[0].start,sl[0].stop)])
-        plt.savefig(save_file.replace('npz', 'png'))
-        plt.show()
+    save_training_data( save_file+'.npz' if not '.npz' in save_file else save_file,
+                        X, Y, axes )
+    
+    if delete:
+        for file in files_npz:
+            os.remove(file)
+    
+    if verbose:
+        for i in range(2):
+            plt.figure(figsize=(16,4))
+            sl = slice(8*i, 8*(i+1)), 0
+            plot_some(X[sl],Y[sl],title_list=[np.arange(sl[0].start,sl[0].stop)])
+            plt.savefig(save_file.replace('npz', 'png'))
+            plt.show()

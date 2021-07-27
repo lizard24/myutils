@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(name='myutils',
-      version='0.0.15',
+      version='0.0.16',
       # package_dir = {'': 'myutils'}, # if there was a folder "myutils" in the folder
       packages = find_packages(),
       install_requires=[
@@ -12,7 +12,7 @@ setup(name='myutils',
           "scipy",
           "opencv-python",
           "opencv-rolling-ball",
-	  #"csbdeep @ git+https://{lizard24}@github.com/lizard24/mycsbdeep.git",
+	  "csbdeep @ git+https://{lizard24}@github.com/lizard24/mycsbdeep.git",
 	  "twilio",
 	  "readlif",
 	  "read-roi"
