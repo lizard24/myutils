@@ -314,3 +314,21 @@ def copy_file( source_file      = None,
             os.remove('%s/%s' % (source_dir, source_file))
                 
 
+def index_filename(file, ext=None):
+    
+    ext   = '.%s' % file.split('.')[-1] if     ext is None else ext
+    file  = '%s%s' % (file, ext)        if not ext in file else file
+    file_ = '%s_1%s' % (file.replace(ext,''), ext)
+
+    if os.path.isfile(file):
+        os.rename(file, file_)
+        file = file_
+    elif os.path.isfile(file_):
+        file = file_
+
+    n=1
+    while os.path.isfile(file):
+        file = '%s%s%s' % (file.replace(file.split('_')[-1],''), n+1, ext)
+        n+=1
+        
+    return file
