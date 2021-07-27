@@ -1,11 +1,13 @@
 import numpy as np
+import sys
 import os
 
 import matplotlib.pyplot as plt
 
 from csbdeep.data  import RawData, norm_percentiles, no_background_patches, create_patches, shuffle_inplace
-from csbdeep.io    import load_training_data, save_training_data
+from csbdeep.io    import load_training_data, save_training_data, save_tiff_imagej_compatible,
 from csbdeep.utils import plot_some
+
 
 from myutils.general         import generate_folder
 from myutils.myimageprocess  import im
@@ -89,3 +91,48 @@ def merge_npz( files_npz  = None  ,     ### list of npz files
             plot_some(X[sl],Y[sl],title_list=[np.arange(sl[0].start,sl[0].stop)])
             plt.savefig(save_file.replace('npz', 'png'))
             plt.show()
+
+
+
+def npz_to_folder( file,
+                   basedir    = None,
+                   folder_x   = 'input',
+                   folder_y   = 'target',
+                   file_ext   = None,
+                   val_split  = 0,
+                   n_images   = None,
+                   final_axes = None,
+                   preprocess = None ):
+    
+    (X, Y), val, axes = load_training_data( file,
+                                            validation_split=val_split,
+                                            n_images=n_images )
+    
+    print(axes)
+    S = axes.find('S')
+    if S != 0:
+        print("Error: 'axes' (%s)  not accepted!" % axes)
+        sys.exit()
+        
+    if not preprocess is None:
+        X = preprocess(X)
+        Y = preprocess(Y)
+        
+    if final_axes is None:
+        C = axes.find('C')
+        if X.shape[C]==1:
+            new_dims = X.shape[:C]+X.shape[C+1:]
+            X = np.reshape(X, new_dims)
+            Y = np.reshape(Y, new_dims)
+        final_axes = axes.replace('S','').replace('C','')
+    
+    if not type(file_ext) is list:
+        if file_ext is None:
+            filenames = ['%s.tif' % nn for nn in range(X.shape[0])]
+        else:
+            filenames = ['%s_%s.tif' % (file_ext, nn) for nn in range(X.shape[0])]
+    
+    for nn in range(X.shape[0]):
+        
+        save_tiff_imagej_compatible( '/'.join([basedir, folder_x, filenames[nn]]), X[nn], final_axes )
+        save_tiff_imagej_compatible( '/'.join([basedir, folder_y, filenames[nn]]), Y[nn], final_axes )
