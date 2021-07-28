@@ -12,7 +12,7 @@ setup(name='myutils',
           "scipy",
           "opencv-python",
           "opencv-rolling-ball",
-	  "csbdeep @ git+https://{lizard24}@github.com/lizard24/mycsbdeep.git",
+	  ###"csbdeep @ git+https://{lizard24}@github.com/lizard24/mycsbdeep.git",
 	  "twilio",
 	  "readlif",
 	  "read-roi"
