@@ -108,7 +108,7 @@ def _roi(img, file=None, num=None, width=1):
             N = np.prod(dims_first) if not dims_first == () else 1
             img = np.reshape(img, (N,)+dims_last)
 
-            img = img[:,t:t+h+1, l:l+w+1]
+            img = img[:,t:t+h, l:l+w]
 
             dims_last = img.shape[-2:]
             img = np.reshape(img, dims_first+dims_last)
