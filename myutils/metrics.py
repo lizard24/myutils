@@ -1,5 +1,7 @@
 import numpy as np
 import math
+import gc
+
 
 from skimage.metrics import structural_similarity as ssim  
 from myutils.myimageprocess import im, norm_minmse
@@ -128,7 +130,9 @@ def ms_ssim(X, Y, data_range=1, scales=1, filter_size=11, power_factors=None, fi
         ms_ssim_ = tf.reduce_mean(ms_ssim_)
         
     with tf.Session() as sess:
-        ms_ssim_ = ms_ssim_.eval()        
+        ms_ssim_ = ms_ssim_.eval()
+    sess.close() 
+    gc.collect()
 
     return ms_ssim_
 
