@@ -3,7 +3,7 @@ import math
 import gc
 
 
-from skimage.metrics import structural_similarity as ssim  
+from skimage.metrics import structural_similarity as _ssim  
 from myutils.myimageprocess import im, norm_minmse
 
 
@@ -161,14 +161,14 @@ def ssim(returns, img_i, img_f, data_range=1, norm=False, gaussian_weights=True,
         img_i, img_f = norm_minmse(img_i, img_f, normalize_gt=True)  
     
     if (returns == 'both') or (returns == 'map'):
-        idx_, map_ = ssim(img_i, img_f, data_range=data_range, full=True, gaussian_weights=gaussian_weights, sigma=sigma, win_size=win_size)
+        idx_, map_ = _ssim(img_i, img_f, data_range=data_range, full=True, gaussian_weights=gaussian_weights, sigma=sigma, win_size=win_size)
         
         if returns == 'both':
             return idx_, map_
         elif returns == 'map':
             return map_
     else:
-        idx_ = ssim(img_i, img_f, data_range=data_range, full=False, gaussian_weights=gaussian_weights, sigma=sigma, win_size=win_size)
+        idx_ = _ssim(img_i, img_f, data_range=data_range, full=False, gaussian_weights=gaussian_weights, sigma=sigma, win_size=win_size)
         return idx_
 
 
