@@ -90,10 +90,12 @@ def training(  X, Y, X_val, Y_val, axes,
     
     """
     
-    model_name = '%s-%s-%s_%s_%s' % ( train_epochs,
+    
+    model_name = '%s-%s-%s_%s%s_%s' % ( train_epochs,
                                       train_steps_per_epoch,
                                       train_batch_size,
                                       'ms%s' % ms_ssim_no_weights if train_loss == 'ms_ssim' else train_loss,
+                                      '-%s' % ms_ssim_filter_size if not ms_ssim_filter_size is None else '',
                                       "{:.0e}".format(train_learning_rate).replace('0','') )
     
     folder_out = '%s/%s' % (basedir, model_name)
