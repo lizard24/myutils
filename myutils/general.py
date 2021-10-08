@@ -107,9 +107,7 @@ def _roi(img, file=None, num=None, width=1, scaling_factor=1):
     
         try:
             l, t, w, h = roi['left'], roi['top'], roi['width'], roi['height']
-            l, t, w, h = map(lambda x: int(x*factor), (l, t, w, h))
-
-            width = width*factor
+            l, t, w, h = map(lambda x: int(x*scaling_factor), (l, t, w, h))
 
             dims_first, dims_last = img.shape[:-2], img.shape[-2:]
             N = np.prod(dims_first) if not dims_first == () else 1
@@ -122,7 +120,7 @@ def _roi(img, file=None, num=None, width=1, scaling_factor=1):
 
         except:
             x1, x2, y1, y2 = roi['x1'], roi['x2'], roi['y1'], roi['y2']
-            x1, x2, y1, y2 = map(lambda x: int(x*factor), (x1, x2, y1, y2))
+            x1, x2, y1, y2 = map(lambda x: int(x*scaling_factor), (x1, x2, y1, y2))
                         
             img = extract_profile(img, y1, x1, y2, x2, width=width)
             
