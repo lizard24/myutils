@@ -7,7 +7,7 @@ rc('axes',edgecolor='#AEB6BF')
 from myutils.myimageprocess import im
 from twilio.rest import Client
 from read_roi import read_roi_file as read_roi
-from scipy import ndimage
+from scipy import ndimage, interpolate
 
 
 def extract_profile(image, x0, y0, x1, y1, width=1):
@@ -127,7 +127,7 @@ def _roi(img, file=None, num=None, width=1, scaling_factor=1):
             if not num is None:
                 if img.shape[0]!=num:
                     x = np.arange(0, img.shape[0])
-                    f = scipy.interpolate.interp1d(x, img)
+                    f = interpolate.interp1d(x, img)
                     xnew = np.arange(0, num)
                     xnew = xnew / np.max(xnew) * np.max(x)
                     img = f(xnew)
