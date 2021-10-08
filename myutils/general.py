@@ -10,7 +10,7 @@ from read_roi import read_roi_file as read_roi
 from scipy import ndimage
 
 
-def extract_profile(image, x0, y0, x1, y1, width=1, num=None):
+def extract_profile(image, x0, y0, x1, y1, width=1):
     """
     Extract a line profile from (x0, y0) to (x1, y1).
     
@@ -34,7 +34,7 @@ def extract_profile(image, x0, y0, x1, y1, width=1, num=None):
     Dx = x1 - x0
     Dy = y1 - y0
     
-    l = np.sqrt((Dx ** 2 + Dy ** 2)) if num is None else num
+    l = np.sqrt((Dx ** 2 + Dy ** 2))
     
     dx = Dx / l
     dy = Dy / l
@@ -75,7 +75,7 @@ def extract_profile(image, x0, y0, x1, y1, width=1, num=None):
     return p
 
 
-def _roi(img, file=None, num=None, width=1):
+def _roi(img, file=None, num=None, width=1, scaling_factor=1):
 
     """
     Extracts either cropped ROI or Lineprofile from image.
@@ -90,6 +90,8 @@ def _roi(img, file=None, num=None, width=1):
         optional: for line profile; length of line profile; default: no interpolation
     width : int
         optional: for line profile; profile width in pixels (number of parallel profiles to average over)
+    scaling_factor : int
+        optional: for rescaling of .roi file
     Returns
     -------
     
@@ -97,13 +99,18 @@ def _roi(img, file=None, num=None, width=1):
     """
 
     if not file is None:
+		
+	if not '.roi' in file:
+            file = file+'.roi'
    
         roi = read_roi(file)[file.split('/')[-1].split('.roi')[0]]
     
         try:
             l, t, w, h = roi['left'], roi['top'], roi['width'], roi['height']
-            l, t, w, h = map(lambda x: int(x), (l, t, w, h))
-
+            l, t, w, h = map(lambda x: int(x*factor), (l, t, w, h))
+		
+            width = width*factor
+	
             dims_first, dims_last = img.shape[:-2], img.shape[-2:]
             N = np.prod(dims_first) if not dims_first == () else 1
             img = np.reshape(img, (N,)+dims_last)
@@ -115,12 +122,17 @@ def _roi(img, file=None, num=None, width=1):
 
         except:
             x1, x2, y1, y2 = roi['x1'], roi['x2'], roi['y1'], roi['y2']
-            x1, x2, y1, y2 = map(lambda x: int(x), (x1, x2, y1, y2))
+            x1, x2, y1, y2 = map(lambda x: int(x*factor), (x1, x2, y1, y2))
                         
-            img = extract_profile(img, y1, x1, y2, x2, width=width, num=num)
+            img = extract_profile(img, y1, x1, y2, x2, width=width)
             
-            #x, y = np.linspace(x1, x2, num), np.linspace(y1, y2, num)
-            #img = ndimage.map_coordinates(img, np.vstack((y, x)))
+            if not num is None:
+                if img.shape[0]!=num:
+                    x = np.arange(0, img.shape[0])
+                    f = scipy.interpolate.interp1d(x, img)
+                    xnew = np.arange(0, num)
+                    xnew = xnew / np.max(xnew) * np.max(x)
+                    img = f(xnew)
             
     return img
 
