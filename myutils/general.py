@@ -99,18 +99,18 @@ def _roi(img, file=None, num=None, width=1, scaling_factor=1):
     """
 
     if not file is None:
-		
-	if not '.roi' in file:
-            file = file+'.roi'
-   
+        
+        if not '.roi' in file:
+                file = file+'.roi'
+
         roi = read_roi(file)[file.split('/')[-1].split('.roi')[0]]
     
         try:
             l, t, w, h = roi['left'], roi['top'], roi['width'], roi['height']
             l, t, w, h = map(lambda x: int(x*factor), (l, t, w, h))
-		
+
             width = width*factor
-	
+
             dims_first, dims_last = img.shape[:-2], img.shape[-2:]
             N = np.prod(dims_first) if not dims_first == () else 1
             img = np.reshape(img, (N,)+dims_last)
@@ -140,7 +140,7 @@ def _roi(img, file=None, num=None, width=1, scaling_factor=1):
 def myfigure( img,
               header_left = None,
               header_top  = None,
-	      title       = None,
+              title       = None,
               xlim    = None,
               ylim    = None,
               pmin    = None,
@@ -148,7 +148,7 @@ def myfigure( img,
               rot     = False,
               save    = False,
               display = True,
-	      roi     = None ):
+              roi     = None ):
 
     if save:
         generate_folder(save, level=-1)
