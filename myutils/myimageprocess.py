@@ -259,7 +259,38 @@ class im:
             
         return im.exit(self)
             
+        
     def flatfield(self, sigma=None, norm=True):
+
+        """flatfield correction for the last 2 dimensions in a n-dim numpy array
+
+        Parameters
+        ----------
+        data     : numpy array
+        sigma    : sigma for the gaussian filter
+        norm     : boolean; normalisation after flatfield correction?
+        maxVal   : maximum value of the image - only applies if norm=True
+        method   : 'subtract' or 'divide'
+
+
+        Return
+        ------
+        flatfield corrected array
+
+        """
+
+        self.data = np.float64(self.data/np.max(self.data))
+        
+        for n in range(self.N):
+            bg = gaussian_filter(self.data[n], sigma)
+            self.data[n] = self.data[n] / bg * np.mean(bg)
+        
+        if norm: self.data = im(self.data).norm(glob=True)
+                
+        return im.exit(self)
+        
+        
+    def flatfield2(self, sigma=None, norm=True):
 
         """flatfield correction for the last 2 dimensions in a n-dim numpy array
 
