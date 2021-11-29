@@ -4,8 +4,7 @@ import matplotlib.pyplot as plt
 import cv2
 from cv2_rolling_ball import subtract_background_rolling_ball
 
-from scipy.ndimage    import gaussian_filter
-from scipy.ndimage    import gaussian_filter1d
+from scipy.ndimage    import gaussian_filter, gaussian_filter1d, convolve
 from scipy.signal     import argrelextrema
 from scipy            import interpolate
 
@@ -366,7 +365,23 @@ class im:
         
         return im.exit(self)
     
-   
+    
+    def downsampling(self, n=1):
+        
+        def _downsampling(data):
+            y_fin, x_fin = map(lambda x: int(data.shape[x]/2), (1,2))
+            data = data[:,:2*y_fin,:2*x_fin]
+            output = np.zeros((data.shape[0], y_fin, x_fin))
+            for i in range(data.shape[0]):
+                output[i] = convolve(data[i], np.array([[0.25,0.25],[0.25,0.25]]))[:data.shape[1]:2,:data.shape[2]:2]
+            return output
+        
+        if n>0:
+            for i in range(n):
+                self.data = _downsampling(self.data)
+            
+        return im.exit(self)
+        
     def my_hist_matching(self, histSize_ini=256, histSize_fin=256, display=False, mode='linear', tidy_hist=True ):
 
         self.data = im.uint8(self.data)
