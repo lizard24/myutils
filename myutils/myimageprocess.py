@@ -379,6 +379,8 @@ class im:
         if n>0:
             for i in range(n):
                 self.data = _downsampling(self.data)
+                
+            self.dims_last = self.data.shape[-2:]
             
         return im.exit(self)
         
