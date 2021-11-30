@@ -8,8 +8,6 @@ from scipy.ndimage    import gaussian_filter, gaussian_filter1d, convolve
 from scipy.signal     import argrelextrema
 from scipy            import interpolate
 
-from csbdeep.utils import plot_some
-
 def imshape2d(file):
     from PIL import Image
     return Image.open(file).size
@@ -44,8 +42,7 @@ class im:
     def im2rgb(blue    = None,
                red     = None,
                green   = None,
-               dtype   = None,
-               display = False):
+               dtype   = None):
         
         ## blue, red, green have to be 2dim arrays
         
@@ -60,10 +57,6 @@ class im:
         
         if (dtype is None) and not ('uint' in str(rgb.dtype)):
             rgb = im.uint8(rgb)
-
-        if display:
-            plt.figure(figsize=(16,10))
-            plot_some([cv2.cvtColor(rgb, cv2.COLOR_BGR2RGB)], pmin=2,pmax=99.8);
             
         return rgb
     
