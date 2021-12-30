@@ -272,7 +272,7 @@ class im:
 
         """
 
-        self.data = np.float64(self.data/np.max(self.data))
+        self.data = np.float64(self.data/np.max(self.data)) + 1e-7
         
         for n in range(self.N):
             bg = gaussian_filter(self.data[n], sigma)

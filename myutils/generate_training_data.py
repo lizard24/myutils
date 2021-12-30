@@ -5,7 +5,7 @@ import os
 import matplotlib.pyplot as plt
 
 from csbdeep.data  import RawData, norm_percentiles, no_background_patches, create_patches, shuffle_inplace
-from csbdeep.io    import load_training_data, save_training_data, save_tiff_imagej_compatible,
+from csbdeep.io    import load_training_data, save_training_data, save_tiff_imagej_compatible
 from csbdeep.utils import plot_some
 
 

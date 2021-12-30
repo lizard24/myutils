@@ -3,8 +3,9 @@ import gc
 import random
 
 from csbdeep.utils import plot_some
-from csbdeep.data  import RawData, create_patches, norm_percentiles
+from csbdeep.data  import RawData, create_patches, norm_percentiles, no_background_patches, no_norm
 from csbdeep.io    import save_tiff_imagej_compatible
+
 
 from scipy.ndimage import gaussian_filter as gaussian
 from scipy.ndimage import center_of_mass
@@ -106,9 +107,6 @@ def get_correlation_map(benchmark, img, metric, shuffle):
 
 
 def realign(benchmark, img, shuffle, N, patch_size, metric='mse', display=True, norm=True, sigma=2):
-     
-    def no_norm(patches_x, patches_y, x, y, mask, channel):
-        return patches_x, patches_y
     
     raw_data = RawData.from_arrays( [im(gaussian(benchmark, sigma)).adjust(lower=2, upper=99.8) if norm else benchmark],
                                     [im(gaussian(img, sigma)).adjust(lower=2, upper=99.8) if norm else img] )
@@ -118,11 +116,19 @@ def realign(benchmark, img, shuffle, N, patch_size, metric='mse', display=True, 
     if (metric=='ms-ssim3') and (patch_size < 48): patch_size=48
     
     ### X and Y come as CTYX
-    X, Y, XY_axes = create_patches (raw_data   = raw_data,
-                                    patch_size = (patch_size, patch_size),
-                                    n_patches_per_image = N,
-                                    verbose    = False,
-                                    normalization = norm_percentiles() if norm else no_norm,)
+    try:
+        X, Y, XY_axes = create_patches (raw_data   = raw_data,
+                                        patch_size = (patch_size, patch_size),
+                                        n_patches_per_image = N,
+                                        verbose    = False,
+                                        normalization = norm_percentiles() if norm else no_norm)
+    except:
+        X, Y, XY_axes = create_patches (raw_data   = raw_data,
+                                        patch_size = (patch_size, patch_size),
+                                        n_patches_per_image = N,
+                                        patch_filter = no_background_patches(0)
+                                        verbose    = False,
+                                        normalization = norm_percentiles() if norm else no_norm)
     
     if norm:
         for n in range(X.shape[0]):
