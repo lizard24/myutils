@@ -126,7 +126,7 @@ def realign(benchmark, img, shuffle, N, patch_size, metric='mse', display=True, 
         X, Y, XY_axes = create_patches (raw_data   = raw_data,
                                         patch_size = (patch_size, patch_size),
                                         n_patches_per_image = N,
-                                        patch_filter = no_background_patches(0)
+                                        patch_filter = no_background_patches(0),
                                         verbose    = False,
                                         normalization = norm_percentiles() if norm else no_norm)
     
