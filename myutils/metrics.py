@@ -121,7 +121,7 @@ def ms_ssim(X, Y, data_range=1, scales=1, filter_size=11, power_factors=None, fi
     if len(X.shape)==2:
         X, Y = map(lambda x: np.reshape(x, (1,)+x.shape), (X, Y))
     if len(X.shape)==3:
-        X, Y = map(lambda x: np.reshape(x, x.shape(1,)), (X, Y))
+        X, Y = map(lambda x: np.reshape(x, x.shape+(1,)), (X, Y))
 
         
     ms_ssim_ = _ms_ssim(X, Y, data_range, power_factors=power_factors, filter_size=filter_size, filter_sigma=filter_sigma, k1=0.01, k2=0.03)
